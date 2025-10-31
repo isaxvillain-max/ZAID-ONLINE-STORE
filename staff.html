@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff - ZAID STORE</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <a href="index.html"><img src="logo.png" class="logo" alt="ZAID STORE Logo"></a>
+  <h2>Our Staff</h2>
+</header>
+
+<div id="staffContainer" class="staff-container"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBNvUn85iXp6ZXMTBLAKYR_OsuXHPDk0TM",
+  authDomain: "zaid-cosmetics-f3792.firebaseapp.com",
+  databaseURL: "https://zaid-cosmetics-f3792-default-rtdb.firebaseio.com",
+  projectId: "zaid-cosmetics-f3792",
+  storageBucket: "zaid-cosmetics-f3792.firebasestorage.app",
+  messagingSenderId: "1027145686032",
+  appId: "1:1027145686032:web:e3797f9b0795ace2987e95",
+  measurementId: "G-TP33NHR7B2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function loadStaff() {
+  const container = document.getElementById("staffContainer");
+  const staffRef = ref(db, "staff");
+  onValue(staffRef, (snapshot) => {
+    const staff = snapshot.val();
+    container.innerHTML = "";
+    for (let key in staff) {
+      const s = staff[key];
+      const card = document.createElement("div");
+      card.className = "staff-card";
+      card.innerHTML = `
+        <img src="${s.photo}" alt="${s.name}">
+        <h3>${s.name}</h3>
+        <p>${s.role}</p>
+      `;
+      container.appendChild(card);
+    }
+  });
+}
+
+loadStaff();
+</script>
+
+</body>
+</html>

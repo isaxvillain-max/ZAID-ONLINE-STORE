@@ -1,0 +1,140 @@
+<!-- Rules Popup -->
+<div id="rulesPopup">
+  <div class="popup-content">
+    <h2>ZAID STORE - Rules & Agreement</h2>
+    <p>Welcome! Please read the following carefully before using our online store:</p>
+    <div class="rules-scroll">
+      <h3>General Rules</h3>
+      <ul>
+        <li>Provide accurate personal details including name, phone number, and delivery address.</li>
+        <li>Ensure your contact number is correct; orders will be confirmed via WhatsApp.</li>
+        <li>Do not place fake orders or misuse the system. Violators may be blocked.</li>
+        <li>All products are 100% original and of high quality.</li>
+        <li>Payment options: JazzCash, EasyPaisa, Cash on Delivery.</li>
+        <li>By agreeing, you accept that ZAID STORE is not responsible for incorrect order details provided by the customer.</li>
+        <li>Customer support available via WhatsApp: <b>03469489167</b>.</li>
+      </ul>
+
+      <h3>How to Use ZAID STORE</h3>
+      <ol>
+        <li>Browse any category: Cosmetics, Garments, Perfumes.</li>
+        <li>Click on a product to view details.</li>
+        <li>Press <b>Order</b> to send your order via WhatsApp automatically with product name and price.</li>
+        <li>Only admin can add or delete products or staff; customers will see only order buttons.</li>
+      </ol>
+
+      <h3>Delivery & Support</h3>
+      <p>Provide clear delivery instructions to avoid delays. Support is available via WhatsApp during business hours.</p>
+    </div>
+    <button id="agreeBtn">I Agree & Enter Store</button>
+  </div>
+</div>
+
+<style>
+/* Popup Background */
+#rulesPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#rulesPopup.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup-content {
+  background: #fff;
+  color: #333;
+  padding: 30px 40px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+  max-height: 80%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.rules-scroll {
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.rules-scroll ul, .rules-scroll ol {
+  padding-left: 20px;
+}
+
+.popup-content h2 {
+  text-align: center;
+  color: #ff6600;
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.popup-content h3 {
+  color: #ff6600;
+  margin-top: 15px;
+  font-size: 20px;
+}
+
+.popup-content p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.popup-content button {
+  align-self: center;
+  background: #ff6600;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.popup-content button:hover {
+  background: #e65c00;
+}
+
+.rules-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rules-scroll::-webkit-scrollbar-thumb {
+  background-color: #ff6600;
+  border-radius: 5px;
+}
+</style>
+
+<script>
+window.onload = () => {
+  const popup = document.getElementById('rulesPopup');
+  const agreeBtn = document.getElementById('agreeBtn');
+
+  if (!localStorage.getItem("agreedToRules")) {
+    popup.classList.add("active");
+  }
+
+  agreeBtn.addEventListener("click", () => {
+    localStorage.setItem("agreedToRules", "true");
+    popup.classList.remove("active");
+  });
+};
+</script>

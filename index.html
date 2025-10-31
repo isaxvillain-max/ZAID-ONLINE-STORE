@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZAID STORE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    body {background:#f8f8f8;color:#333;line-height:1.6;overflow-x:hidden;}
+    header {display:flex;align-items:center;justify-content:space-between;padding:15px 30px;background:white;box-shadow:0 3px 10px rgba(0,0,0,0.05);position:sticky;top:0;z-index:1000;}
+    header .logo {width:120px;}
+    header input#searchBar {flex:1;margin:0 20px;padding:10px 15px;border-radius:10px;border:1px solid #ccc;}
+    header nav a {margin-left:15px;padding:8px 12px;border-radius:8px;transition:0.3s;background:#ff6600;color:white;font-weight:500;text-decoration:none;}
+    header nav a:hover {background:#e65c00;}
+    main {padding:40px 20px;text-align:center;}
+    main h1 {font-size:32px;color:#ff6600;margin-bottom:15px;}
+    .whatsapp-float {position:fixed;bottom:20px;right:20px;background:#25d366;color:white;padding:15px;border-radius:50%;font-size:24px;box-shadow:0 4px 15px rgba(0,0,0,0.2);z-index:1000;}
+    #adminLoginPopup {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:10000;opacity:0;pointer-events:none;transition:0.3s;}
+    #adminLoginPopup.active {opacity:1;pointer-events:auto;}
+    .admin-box {background:white;padding:30px;border-radius:15px;width:90%;max-width:400px;text-align:center;box-shadow:0 6px 25px rgba(0,0,0,0.3);}
+    .admin-box h2 {color:#ff6600;margin-bottom:20px;}
+    .admin-box input {width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;border-radius:10px;}
+    .admin-box button {background:#ff6600;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:bold;cursor:pointer;transition:0.3s;}
+    .admin-box button:hover {background:#e65c00;}
+  </style>
+</head>
+<body>
+  <header>
+    <img src="./logo.png" alt="ZAID STORE Logo" class="logo">
+    <input type="text" id="searchBar" placeholder="Search products...">
+    <nav>
+      <a href="cosmetics.html">Cosmetics</a>
+      <a href="garments.html">Garments</a>
+      <a href="perfumes.html">Perfumes</a>
+      <a href="staff.html">Staff</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Welcome to ZAID STORE 💫</h1>
+    <p>Your one-stop shop for Cosmetics, Garments, and Perfumes. High-quality products, trusted service.</p>
+  </main>
+
+  <a href="https://wa.me/03469489167" class="whatsapp-float" target="_blank">💬</a>
+
+  <!-- ===== Admin Login Popup ===== -->
+  <div id="adminLoginPopup">
+    <div class="admin-box">
+      <h2>Admin Login</h2>
+      <input type="password" id="adminPassword" placeholder="Enter password">
+      <button id="loginBtn">Login</button>
+    </div>
+  </div>
+
+  <!-- ===== Firebase Setup ===== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNvUn85iXp6ZXMTBLAKYR_OsuXHPDk0TM",
+      authDomain: "zaid-cosmetics-f3792.firebaseapp.com",
+      databaseURL: "https://zaid-cosmetics-f3792-default-rtdb.firebaseio.com",
+      projectId: "zaid-cosmetics-f3792",
+      storageBucket: "zaid-cosmetics-f3792.firebasestorage.app",
+      messagingSenderId: "1027145686032",
+      appId: "1:1027145686032:web:e3797f9b0795ace2987e95",
+      measurementId: "G-TP33NHR7B2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+
+  <script>
+    const adminPopup = document.getElementById("adminLoginPopup");
+    const loginBtn = document.getElementById("loginBtn");
+    const adminPassword = document.getElementById("adminPassword");
+
+    document.addEventListener("keydown", (e) => {
+      if (e.shiftKey && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        adminPopup.classList.add("active");
+      }
+    });
+
+    loginBtn.addEventListener("click", () => {
+      if (adminPassword.value === "@zaid034") {
+        localStorage.setItem("isAdmin", "true");
+        alert("Welcome Admin! Access Granted ✅");
+        window.location.href = "admin.html";
+      } else {
+        alert("Incorrect Password ❌");
+      }
+    });
+
+    adminPopup.addEventListener("click", (e) => {
+      if (e.target === adminPopup) {
+        adminPopup.classList.remove("active");
+      }
+    });
+  </script>
+</body>
+</html>

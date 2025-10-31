@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - ZAID STORE</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body {background:#f8f8f8;font-family:'Poppins',sans-serif;margin:0;padding:0;}
+  header {display:flex;align-items:center;justify-content:center;padding:15px 0;background:#ff6600;color:white;font-size:24px;font-weight:bold;}
+  main {padding:20px;max-width:1200px;margin:auto;}
+  h2 {color:#ff6600;margin-bottom:10px;}
+  .admin-section {margin-bottom:40px;padding:20px;background:white;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+  input, select {width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;}
+  button {background:#ff6600;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;transition:0.3s;font-weight:bold;}
+  button:hover {background:#e65c00;}
+  .card {display:flex;align-items:center;justify-content:space-between;padding:10px;margin:5px 0;border-bottom:1px solid #ccc;}
+  .card img {width:50px;height:50px;border-radius:5px;object-fit:cover;margin-right:10px;}
+</style>
+</head>
+<body>
+
+<header>Admin Panel - ZAID STORE</header>
+
+<main>
+  <!-- ===== PRODUCTS SECTION ===== -->
+  <div class="admin-section">
+    <h2>Add Product</h2>
+    <select id="productCategory">
+      <option value="cosmetics">Cosmetics</option>
+      <option value="garments">Garments</option>
+      <option value="perfumes">Perfumes</option>
+    </select>
+    <input type="text" id="productName" placeholder="Product Name">
+    <input type="text" id="productDescription" placeholder="Description">
+    <input type="number" id="productPrice" placeholder="Price">
+    <input type="text" id="productImage" placeholder="Image URL">
+    <button id="addProductBtn">Add Product</button>
+
+    <h2>Existing Products</h2>
+    <div id="productsList"></div>
+  </div>
+
+  <!-- ===== STAFF SECTION ===== -->
+  <div class="admin-section">
+    <h2>Add Staff</h2>
+    <input type="text" id="staffName" placeholder="Staff Name">
+    <input type="text" id="staffRole" placeholder="Role">
+    <input type="text" id="staffPhoto" placeholder="Photo URL">
+    <button id="addStaffBtn">Add Staff</button>
+
+    <h2>Existing Staff</h2>
+    <div id="staffList"></div>
+  </div>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getDatabase, ref, set, push, remove, onValue } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBNvUn85iXp6ZXMTBLAKYR_OsuXHPDk0TM",
+    authDomain: "zaid-cosmetics-f3792.firebaseapp.com",
+    databaseURL: "https://zaid-cosmetics-f3792-default-rtdb.firebaseio.com",
+    projectId: "zaid-cosmetics-f3792",
+    storageBucket: "zaid-cosmetics-f3792.firebasestorage.app",
+    messagingSenderId: "1027145686032",
+    appId: "1:1027145686032:web:e3797f9b0795ace2987e95",
+    measurementId: "G-TP33NHR7B2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // ===== ADD PRODUCT =====
+  const addProductBtn = document.getElementById('addProductBtn');
+  const productsList = document.getElementById('productsList');
+
+  function loadProductsAdmin() {
+    productsList.innerHTML = "";
+    ['cosmetics','garments','perfumes'].forEach(category=>{
+      const categoryRef = ref(db, category);
+      onValue(categoryRef, snapshot=>{
+        const data = snapshot.val();
+        for(let key in data){
+          const p = data[key];
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.innerHTML = `<span><img src="${p.image}">${p.name} (${category}) - Rs. ${p.price}</span>
+            <button onclick="remove(ref(db,'${category}/${key}'))">Delete</button>`;
+          productsList.appendChild(div);
+        }
+      });
+    });
+  }
+
+  addProductBtn.addEventListener('click', ()=>{
+    const category = document.getElementById('productCategory').value;
+    const name = document.getElementById('productName').value;
+    const desc = document.getElementById('productDescription').value;
+    const price = document.getElementById('productPrice').value;
+    const image = document.getElementById('productImage').value;
+
+    if(!name||!price||!image){ alert("Please fill name, price and image."); return; }
+
+    const newRef = push(ref(db, category));
+    set(newRef, {name, description: desc, price, image});
+    alert("Product added ✅");
+    loadProductsAdmin();
+  });
+
+  // ===== ADD STAFF =====
+  const addStaffBtn = document.getElementById('addStaffBtn');
+  const staffList = document.getElementById('staffList');
+
+  function loadStaffAdmin(){
+    staffList.innerHTML = "";
+    const staffRef = ref(db, 'staff');
+    onValue(staffRef, snapshot=>{
+      const data = snapshot.val();
+      for(let key in data){
+        const s = data[key];
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<span><img src="${s.photo}">${s.name} - ${s.role}</span>
+          <button onclick="remove(ref(db,'staff/${key}'))">Delete</button>`;
+        staffList.appendChild(div);
+      }
+    });
+  }
+
+  addStaffBtn.addEventListener('click', ()=>{
+    const name = document.getElementById('staffName').value;
+    const role = document.getElementById('staffRole').value;
+    const photo = document.getElementById('staffPhoto').value;
+
+    if(!name||!photo){ alert("Please fill name and photo."); return; }
+
+    const newRef = push(ref(db, 'staff'));
+    set(newRef, {name, role, photo});
+    alert("Staff added ✅");
+    loadStaffAdmin();
+  });
+
+  window.remove = remove; // allow remove to be called from buttons
+  loadProductsAdmin();
+  loadStaffAdmin();
+</script>
+
+</body>
+</html>
